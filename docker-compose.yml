@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+
+  db:
+    container_name: campsite_db
+    image: postgres:13.1
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: campsite
+    ports:
+      - 5432:5432
+
+  web:
+    image: campsite:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://db:5432/campsite
+      DB_USERNAME: user
+      DB_PASSWORD: secret
+

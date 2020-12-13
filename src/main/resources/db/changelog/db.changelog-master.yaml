@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.0
+      author: koba
+      changes:
+        - createTable:
+            tableName: reservation
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: arrival_date
+                  type: timestamptz
+              - column:
+                  name: departure_date
+                  type: timestamptz
+              - column:
+                  name: created_at
+                  type: timestamptz
+              - column:
+                  name: email
+                  type: text
+              - column:
+                  name: full_name
+                  type: text
+        - sql:
+            comment: Add overlap constraint
+            sql: ALTER TABLE reservation ADD CONSTRAINT span_overlap EXCLUDE USING gist (tstzrange(arrival_date, departure_date) WITH &&)
+        - createIndex:
+            indexName: idx_arrival_date
+            tableName: reservation
+            columns:
+              - column:
+                  name: arrival_date
+                  descending: false
